@@ -1,0 +1,28 @@
+ Documentation for Benton-Harbor R script
+Line 8-14: Importing data sets to a working directory in R, reading different sheets in data set and define new names for them
+Line 16-20: Re-organize data frames for later use, defining unique ID for trips by using interactions between Sample number and Person number
+Line 22-37: combining person data with trip data, identify trips which are made by specific person in other words; identify tours
+Line 39-49: Finding trips in Benton Harbor area
+Line 50-64: Adding household’s income and vehicle ownership to data
+Line 66-74: Importing zones data and set a working directory in R for zones data
+Line 75-82: Importing Benton Harbor SP-RP trip data, set a working directory in R for trips data
+Line 90-99: Changing SP-RP trips data to a new frame
+Line 102-106: Set new matrix, data frame and variables to change trips to tours
+Line 108-134: Generating new matrixes for tours, combine different data to generate tours data
+Line 141-144: Defining unique ID for each person
+Line 146-148: Changing order of columns in Data
+Line 150-171: Convert Age variable from continues to categorical variable
+Line 173-186: Changing Mode variable values in SP data into new values
+Line 173-186: Changing Mode variable values in SP data into new values
+Line 188-200: Changing Mode variable values in RP data into new values
+Line 202-215: Changing purpose variable values in RP data into new values
+Line 217-230: Changing purpose variable values in SP data into new values
+Line 232-248: Changing employment variable values in RP data into new values
+Line 232-248: Changing employment variable values in RP data into new values
+Line 250-265: Changing employment variable values in SP data into new values
+Line 293-303: Re-organize columns order in different data sets (SP, RP, MDOT)
+Line 309-317: Calculating Travel Time and Travel Cost for different modes using MDOT data
+Line 320: Re-organize new changes in data sets
+Line 323: Combining all data sets together (Benton Harbor RP data, Benton Harbor SP data, MDOT data)
+Line 326-328: Setting a working directory in R and export data for later use        
+    
