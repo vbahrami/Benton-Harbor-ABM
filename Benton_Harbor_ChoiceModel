@@ -1,0 +1,92 @@
+import pandas as pd
+import biogeme.database as db
+import biogeme.biogeme as bio
+from biogeme import models
+from biogeme.expressions import Beta
+from biogeme.expressions import DefineVariable
+
+##Importing Dataset
+df = pd.read_csv('C:\\Users\\he5799\\Downloads\\datapy1.dat', sep='\t')
+database = db.Database('BHSurvey', df)
+df
+globals().update(database.variables)
+
+
+
+# Parameters to be estimated
+ASC_Auto = Beta('ASC_Auto', 0, None, None, 0)
+ASC_DAR = Beta('ASC_DAR', 0, None, None, 0)
+ASC_Bus = Beta('ASC_Bus', 0, None, None, 0)
+ASC_Walk = Beta('ASC_Walk', 0, None, None, 1)
+A_TIME = Beta('A_TIME', 0, None, None, 0)
+D_TIME = Beta('D_TIME', 0, None, None, 0)
+D_WAIT = Beta('D_WAIT', 0, None, None, 0)
+B_TIME = Beta('B_TIME', 0, None, None, 0)
+W_TIME = Beta('W_TIME', 0, None, None, 0)
+A_COST = Beta('A_COST', 0, None, None, 0)
+D_COST = Beta('D_COST', 0, None, None, 0)
+B_COST = Beta('B_COST', 0, None, None, 0)
+W_COST = Beta('W_COST', 0, None, None, 0)
+A_LIC = Beta('A_LIC', 0, None, None, 0)
+A_Young = Beta('A_Young', 0, None, None, 0)
+A_FamilyHEAD=Beta('A_FamilyHEAD', 0, None, None, 0)
+A_NumberVE = Beta('A_NumberVE', 0, None, None, 0)
+A_FullTime=Beta('A_FullTime', 0, None, None, 0)
+D_NoVEH=Beta('D_NoVEH', 0, None, None, 0)
+D_PartTime=Beta('D_PartTime', 0, None, None, 0)
+D_FamMEMBER=Beta('D_FamMEMBER', 0, None, None, 0)
+D_Young = Beta('D_Young', 0, None, None, 0
+B_HIGHSCHOOL=Beta('B_HIGHSCHOOL', 0, None, None, 0)
+B_HighINCOME=Beta('B_HighINCOME', 0, None, None, 0)
+B_LowINCOME=Beta('B_LowINCOME', 0, None, None, 0)
+B_FamilyHEAD=Beta('B_FamilyHEAD', 0, None, None, 0)
+W_MALE=Beta('W_MALE', 0, None, None, 0)
+W_NOJOB=Beta('W_NOJOB', 0, None, None, 0)
+W_FullTime=Beta('W_FullTime', 0, None, None, 0)
+
+#Defining New Variables
+MALE = DefineVariable('MALE', Gender == 1, database)
+Young = DefineVariable('Young', AGE <31, database)
+HighSchool = DefineVariable('HighSchool', Education==2, database)
+LowIncome = DefineVariable('LowIncome', HH_INC<3 , database)
+HighIncome = DefineVariable('HighIncome', HH_INC==7 , database)
+NoVehicle = DefineVariable('NoVehicle', Num_Auto==1 , database)
+HavingVehicle = DefineVariable('HavingVehicle', Num_Auto>1, database)
+Unemployed = DefineVariable('Unemployed', Status>3, database)
+FullTime = DefineVariable('FullTime', NO_JOB==1, database)
+PartTime = DefineVariable('PartTime', NO_JOB==2, database)
+FamilyHead = DefineVariable('FamilyHead', HH_Head==1, database)
+License = DefineVariable('License', LIC==1, database)
+
+
+# Definition of the utility functions
+V1 = ASC_Auto + A_TIME * Auto_iv_TT+ A_LIC*License+A_COST*AutoCost+A_FamilyHEAD*FamilyHead
+V2 = ASC_DAR + D_TIME * DaR_iv_TT+ D_COST*DaRCost+D_Young*Young
+V3 = ASC_Bus +B_COST*BusCost+B_TIME*Bus_iv_TT+B_HighINCOME*HighIncome+B_LowINCOME*LowIncome
+V4 = ASC_Walk +W_MALE*MALE+ W_TIME*walktraveltime+W_FullTime*FullTime
+
+# Associate utility functions with the numbering of alternatives
+V = {1: V1, 2: V2, 3: V3, 4:V4}
+
+# Associate the availability conditions with the alternatives
+av = {1: autoav, 2: dar_av, 3:bus_av, 4:walk_av}
+
+# Definition of the model. This is the contribution of each
+# observation to the log likelihood function.
+logprob = models.loglogit(V, av, Choice)
+
+# Create the Biogeme object
+biogeme = bio.BIOGEME(database, logprob)
+biogeme.modelName = 'BHMode_Choice'
+
+# Calculate the null log likelihood for reporting.
+biogeme.calculateNullLoglikelihood(av)
+
+# Estimate the parameters
+results = biogeme.estimate()
+
+# Get the results in a pandas table
+pandasResults = results.getEstimatedParameters()
+print(pandasResults)
+
+
